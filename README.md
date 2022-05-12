@@ -1,6 +1,10 @@
-# NousTale
+# Nous Tale
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 13.3.5.
+## About
+
+A native desktop app to build amazing (and probably funnny) stories with your friends. Made with Angular and Electron, people will build *chain* stories that will later be narrated by a voice synthetizer. Dynamic image selection via public API is yet to be confirmed.
+
+I'll leave Angular's generated documentation below for rapid consultation.
 
 ## Development server
 
