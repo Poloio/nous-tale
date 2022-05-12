@@ -1,11 +1,11 @@
-const { app, BrowserWindow } = require("electron");
+const { app, ipcMain, BrowserWindow } = require("electron");
 
 let appWin;
 
 createWindow = () => {
   appWin = new BrowserWindow({
-    width: 800,
-    height: 600,
+    width: 1920,
+    height: 1080,
     title: "Nous Tale",
     resizable: false,
     webPreferences: {
@@ -14,7 +14,7 @@ createWindow = () => {
     }
   });
 
-  appWin.loadURL('file://$(__dirname)/dist/index.html');
+  appWin.loadFile('dist/index.html');
   appWin.setMenu(null);
   appWin.webContents.openDevTools();
 
@@ -30,3 +30,5 @@ app.on("window-all-closed", () => {
     app.quit();
   }
 })
+
+ipcMain.on("message", (event) => event.reply("reply", "pong"));
