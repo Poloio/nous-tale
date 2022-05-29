@@ -15,6 +15,8 @@ export class ConnectionService {
       .configureLogging(signalR.LogLevel.Information)
       .withAutomaticReconnect()
       .build();
+
+    this.instance.start();
   }
 
   async start() {

@@ -10,7 +10,7 @@ const routes: Routes = [
     component: HomeComponent
   },
   {
-    path: 'session/:code',
+    path: ':code',
     component: GameComponent
   }
 ];

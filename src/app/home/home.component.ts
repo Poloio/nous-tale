@@ -20,22 +20,26 @@ export class HomeComponent implements OnInit {
   constructor(private ipcService: IpcService, private cdRef: ChangeDetectorRef,
     private connection: ConnectionService, public router: Router) {
       this.signalr = connection.instance;
-
-      this.signalr.on('EnterRoom', (room) => {
-        router.navigate([`session/${room.Code}`]);
-      });
   }
 
   ngOnInit(): void {
-    this.signalr.start();
+
   }
 
   async createRoom() {
     try {
-      await this.signalr.invoke('CreateRoom', this.username, 10, this.roomPassword);
-      console.log('Invoked API');
+      let roomId = await this.signalr.invoke('CreateRoom', 10, this.roomPassword);
+      console.log(`Room ${roomId} created, entering...`);
+
+      let players = await this.signalr.invoke('EnterRoom', this.username, roomId);
+      console.log(players);
+
+      this.signalr.invoke('ConnectToGroup', roomId);
+      console.log('Room entered successfuly.');
+
+      this.router.navigate([`${roomId}`])
     } catch (err) {
-      console.log(err);
+      console.error(err);
     }
   }
 }
