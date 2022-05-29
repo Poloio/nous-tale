@@ -1,4 +1,6 @@
 import { Component, ChangeDetectorRef, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
+import { ConnectionService } from '../connection.service';
 import { IpcService } from '../ipc.service';
 
 @Component({
@@ -8,22 +10,32 @@ import { IpcService } from '../ipc.service';
 })
 export class HomeComponent implements OnInit {
 
-  pong: boolean = false;
-  constructor(private ipcService: IpcService, private cdRef: ChangeDetectorRef) {
+  connected: boolean = false;
+  username: string;
+  roomPassword: string;
+
+  signalr: signalR.HubConnection;
+
+
+  constructor(private ipcService: IpcService, private cdRef: ChangeDetectorRef,
+    private connection: ConnectionService, public router: Router) {
+      this.signalr = connection.instance;
+
+      this.signalr.on('EnterRoom', (room) => {
+        router.navigate([`session/${room.Code}`]);
+      });
   }
 
   ngOnInit(): void {
-    let button = document.getElementById("button");
-    button?.addEventListener('click', this.ping);
+    this.signalr.start();
   }
 
-  ping = (): void => {
-    this.ipcService.send("message","ping");
-    // Set listener for response and detect changes, returns message if reply is "pong"
-    this.ipcService.on("reply", (event: any, arg: string) => {
-      this.pong = arg === "pong";
-      this.cdRef.detectChanges()
-    });
+  async createRoom() {
+    try {
+      await this.signalr.invoke('CreateRoom', this.username, 10, this.roomPassword);
+      console.log('Invoked API');
+    } catch (err) {
+      console.log(err);
+    }
   }
-
 }

@@ -1,2 +1,5 @@
-<button id="button">Ping</button>
-<p>{{pong}}</p>
+<input type="text" id="username" placeholder="Username" [textContent]="username" />
+
+<input type="text" id="password" placeholder="Room password" [textContent]="roomPassword"/>
+
+<button id="createbtn" (click)="createRoom()">Create Room</button>
