@@ -1,0 +1,86 @@
+/* You can add global styles to this file, and also import other style files */
+body {
+  background-color: #000000;
+  color: #f2f2f2;
+  font-family: sans-serif;
+  text-align: center;
+}
+
+.flex {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  margin: 10%;
+}
+
+.home-grid {
+  display: -ms-grid;
+  display: grid;
+  -ms-grid-columns: 1fr;
+      grid-template-columns: 1fr;
+  -ms-grid-rows: 2fr 2fr 4fr;
+      grid-template-rows: 2fr 2fr 4fr;
+  margin: 5%;
+  -webkit-animation: titleAppear 1500ms ease-out;
+          animation: titleAppear 1500ms ease-out;
+  -webkit-animation-fill-mode: backwards;
+          animation-fill-mode: backwards;
+}
+
+.title {
+  text-align: center;
+  width: auto;
+  -webkit-animation: titleAppear 1500ms ease-out, titleDrop 1000ms ease-out;
+          animation: titleAppear 1500ms ease-out, titleDrop 1000ms ease-out;
+}
+
+@-webkit-keyframes titleAppear {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes titleAppear {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+@-webkit-keyframes titleDrop {
+  0% {
+    -webkit-transform: translateY(-20%);
+            transform: translateY(-20%);
+  }
+  100% {
+    -webkit-transform: translateY(0);
+            transform: translateY(0);
+  }
+}
+
+@keyframes titleDrop {
+  0% {
+    -webkit-transform: translateY(-20%);
+            transform: translateY(-20%);
+  }
+  100% {
+    -webkit-transform: translateY(0);
+            transform: translateY(0);
+  }
+}
+
+.mainbtn {
+  margin-left: 10%;
+}
+/*# sourceMappingURL=styles.css.map */
