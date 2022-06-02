@@ -1,0 +1,28 @@
+.home-grid
+  display: grid
+  grid-template-columns: 1fr
+  grid-template-rows: 2fr 3fr 3fr
+  margin: 5%
+  animation: titleAppear 1500ms ease-out
+  animation-fill-mode: backwards
+
+.title
+  text-align: center
+  width: auto
+  animation: titleAppear 1500ms ease-out, titleDrop 1000ms ease-out
+
+.room-input
+  margin-left: 3ch
+  margin-top: 5vh
+
+@keyframes titleAppear
+  0%
+    opacity: 0
+  100%
+    opacity: 1
+
+@keyframes titleDrop
+  0%
+    transform: translateY(-20%)
+  100%
+    transform: translateY(0)

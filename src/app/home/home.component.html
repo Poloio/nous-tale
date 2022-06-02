@@ -2,8 +2,36 @@
   <h1 class="title">Nous Tale</h1>
   <p class="title">Create stories with your friends.</p>
   <div>
-    <button id="create-room" class="mainbtn">Create Room</button>
-    <button id="enter-room" class="mainbtn">Enter Room</button>
+    <button (click)="showCreateRoom()" id="create-room" class="mainbtn">
+      Create Room
+    </button>
+    <button (click)="showEnterRoom()" id="enter-room" class="mainbtn">
+      Enter Room
+    </button>
+  </div>
+
+  <div id="create-room" class="room-manag-div"
+    *ngIf="creatingRoom" @inOut>
+
+    <label for="is-private">Create a private room</label>
+    <input [(ngModel)]="isPrivate" type="checkbox" id="is-private" class="room-input">
+
+    <br>
+    <label *ngIf="isPrivate" @inOut for="room-password">Password</label>
+    <input *ngIf="isPrivate" @inOut [(ngModel)]="roomPassword" type="text" id="room-password" class="room-input" />
+
+    <br>
+    <label for="max-player">Max. players</label>
+    <input [(ngModel)]="maxPlayers" type="number" id="max-players" class="room-input">
+
+    <br>
+    <button [attr.disabled]="isPrivate && roomPassword === '' ? true : null"
+      (click)="createRoom()" class="room-input" id="create-room-ex" class="mainbtn">Create your room</button>
+  </div>
+
+  <div id="enter-room" class="room-manag-div"
+    *ngIf="enteringRoom" @inOut>
+    Enter room
   </div>
 
 </div>

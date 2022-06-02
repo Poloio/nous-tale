@@ -15,30 +15,11 @@ body
   align-items: center
   margin: 10%
 
-.home-grid
-  display: grid
-  grid-template-columns: 1fr
-  grid-template-rows: 2fr 2fr 4fr
-  margin: 5%
-  animation: titleAppear 1500ms ease-out
-  animation-fill-mode: backwards
+input, button
+  background-color: $background-color
+  color: $font-color
+  font-family: $font-family
 
-.title
-  text-align: center
-  width: auto
-  animation: titleAppear 1500ms ease-out, titleDrop 1000ms ease-out
+button:disabled
+  filter: brightness(50%)
 
-@keyframes titleAppear
-  0%
-    opacity: 0
-  100%
-    opacity: 1
-
-@keyframes titleDrop
-  0%
-    transform: translateY(-20%)
-  100%
-    transform: translateY(0)
-
-.mainbtn
-  margin-left: 10%

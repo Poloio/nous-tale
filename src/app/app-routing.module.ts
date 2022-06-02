@@ -13,6 +13,7 @@ const routes: Routes = [
     path: ':code',
     component: GameComponent
   }
+
 ];
 
 @NgModule({
