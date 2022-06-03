@@ -1,49 +1,35 @@
-import { animate, animation, state, style, transition, trigger } from '@angular/animations';
+import { animate, animation, state, style, transition, trigger, useAnimation } from '@angular/animations';
 import { Component, ChangeDetectorRef, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { autoUpdater } from 'electron';
 import { ConnectionService } from '../connection.service';
 import { IpcService } from '../ipc.service';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-
+import { inOut, inSnapOut } from '../animations'
 
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.sass'],
-  animations: [
-    trigger('inOut', [
-      transition(':enter', [
-        style({ opacity: 0}),
-        animate(
-          '1s linear',
-          style({ opacity: 1})
-        )
-      ]),
-      transition(':leave', [
-        animate('0s',
-          style({ opacity: 0})
-        )
-      ])
-    ])
-  ]
+  animations: [ inOut, inSnapOut ]
 })
 export class HomeComponent implements OnInit {
 
   connected: boolean = false;
+
   username: string;
   roomPassword: string = '';
   creatingRoom: boolean = false;
   enteringRoom: boolean = false;
+
   isPrivate: boolean = false;
-  maxPlayers: number;
+  maxPlayerOptions: number[] = [ 4, 8, 12 ];
+  maxPlayers: number = 8;
 
   signalr: signalR.HubConnection;
 
 
   constructor(private ipcService: IpcService, private cdRef: ChangeDetectorRef,
     private connection: ConnectionService, public router: Router) {
-
   }
 
   ngOnInit(): void {
@@ -69,11 +55,14 @@ export class HomeComponent implements OnInit {
         );
 
       console.log(`Room ${roomCode} created, entering...`);
-
       this.router.navigate([`${roomCode}`])
     } catch (err) {
       console.error(err);
     }
+  }
+
+  setMaxPlayers(max: number) {
+    this.maxPlayers = max;
   }
 
 

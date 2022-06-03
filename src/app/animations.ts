@@ -1,52 +1,31 @@
-import {group, style, animate, trigger, transition, animateChild, query} from '@angular/animations'
+import { animation, style, animate, trigger, transition, useAnimation } from '@angular/animations';
 
-export const slideInAnimation =
-  trigger('routeAnimations', [
-    transition('HomePage <=> AboutPage', [
-      style({ position: 'relative' }),
-      query(':enter, :leave', [
-        style({
-          position: 'absolute',
-          top: 0,
-          left: 0,
-          width: '100%'
-        })
-      ]),
-      query(':enter', [
-        style({ left: '-100%' })
-      ]),
-      query(':leave', animateChild()),
-      group([
-        query(':leave', [
-          animate('300ms ease-out', style({ left: '100%' }))
-        ]),
-        query(':enter', [
-          animate('300ms ease-out', style({ left: '0%' }))
-        ]),
-      ]),
-    ]),
-    transition('* <=> *', [
-      style({ position: 'relative' }),
-      query(':enter, :leave', [
-        style({
-          position: 'absolute',
-          top: 0,
-          left: 0,
-          width: '100%'
-        })
-      ]),
-      query(':enter', [
-        style({ left: '-100%' })
-      ]),
-      query(':leave', animateChild()),
-      group([
-        query(':leave', [
-          animate('200ms ease-out', style({ left: '100%', opacity: 0 }))
-        ]),
-        query(':enter', [
-          animate('300ms ease-out', style({ left: '0%' }))
-        ]),
-        query('@*', animateChild())
-      ]),
-    ])
-  ]);
+export const inSnapOut = trigger('inSnapOut', [
+  transition(':enter', [
+    style({ opacity: 0}),
+    animate(
+      '1s linear',
+      style({ opacity: 1})
+    )
+  ]),
+  transition(':leave', [
+    animate('0s',
+      style({ opacity: 0})
+    )
+  ])
+])
+
+export const inOut = trigger('inOut', [
+  transition(':enter', [
+    style({ opacity: 0}),
+    animate(
+      '1s ease-in',
+      style({ opacity: 1})
+    )
+  ]),
+  transition(':leave', [
+    animate('0.5s ease-in',
+      style({ opacity: 0})
+    )
+  ])
+])

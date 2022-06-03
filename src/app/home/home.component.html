@@ -11,7 +11,7 @@
   </div>
 
   <div id="create-room" class="room-manag-div"
-    *ngIf="creatingRoom" @inOut>
+    *ngIf="creatingRoom" @inSnapOut>
 
     <label for="is-private">Create a private room</label>
     <input [(ngModel)]="isPrivate" type="checkbox" id="is-private" class="room-input">
@@ -22,15 +22,20 @@
 
     <br>
     <label for="max-player">Max. players</label>
-    <input [(ngModel)]="maxPlayers" type="number" id="max-players" class="room-input">
+    <button *ngFor="let option of maxPlayerOptions" (click)="setMaxPlayers(option)"
+      [class]="maxPlayers === option
+      ? 'room-input maxplayers-btn selected'
+      : 'room-input maxplayers-btn'">
+      {{option}}
+    </button>
 
     <br>
     <button [attr.disabled]="isPrivate && roomPassword === '' ? true : null"
-      (click)="createRoom()" class="room-input" id="create-room-ex" class="mainbtn">Create your room</button>
+      (click)="createRoom()" class="room-input"
+      id="create-room-ex">Create your room</button>
   </div>
-
   <div id="enter-room" class="room-manag-div"
-    *ngIf="enteringRoom" @inOut>
+    *ngIf="enteringRoom" @inSnapOut>
     Enter room
   </div>
 
