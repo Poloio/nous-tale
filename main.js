@@ -29,6 +29,8 @@ app.on("window-all-closed", () => {
   if (process.platform !== "darwin") {// If platform isn't MacOS
     app.quit();
   }
-})
+});
 
-ipcMain.on("message", (event) => event.reply("reply", "pong"));
+ipcMain.on('errorWindow', (event, data) => {
+  console.error(data);
+});

@@ -1,4 +1,3 @@
-import * as internal from "stream";
 
 export type Player = {
   id: number;
@@ -12,4 +11,5 @@ export type Room = {
   code: string;
   maxPlayers: number;
   readyCount: number;
+  gameHasStarted: boolean;
 }

@@ -1,0 +1,97 @@
+#newplayer-info
+  width: 60%
+  height: 60%
+  position: absolute
+  margin: 20vh 20vw
+  border-color: white
+  border-style: solid
+  z-index: 100
+
+.room-input.emoji
+  width: 5ch
+  height: 5ch
+  line-height: 6ch
+  border-radius: 50%
+  color: #fff
+  text-align: center
+  background: #000
+  font-family: "Comic Sans MS", "Comic Sans"
+  font-weight: bold
+  font-size: 1.5rem
+
+#lobby
+  display: grid
+  grid-template-areas: 'title info' 'players info'
+  grid-template-columns: 2fr 1fr
+  grid-template-rows: 1fr 3fr
+  height: 100vh
+  width: 100vw
+
+.lobby-title
+  grid-area: title
+  font-size: 3rem
+
+
+.info
+  grid-area: info
+  font-size: 1.5rem
+
+.blur
+  filter: blur(0.5rem)
+
+.players
+  grid-area: players
+  display: grid
+  grid-template-columns: 1fr 3fr
+  grid-template-rows: repeat(auto-fill)
+  overflow: auto
+
+.emoji-div
+  text-align: center
+  width: 100%
+
+.emoji
+  margin-left: 2ch
+  width: 5ch
+  height: 5ch
+  line-height: 5ch
+  border-radius: 50%
+  font-size: 2rem
+  font-family: "Comic Sans MS", "Comic Sans"
+  color: #fff
+  text-align: center
+  background: #000
+  border-style: solid
+  border-color: white
+  border-width: 2px
+
+.name
+  font-size: 2rem
+  font-weight: bold
+  line-height: 5ch
+  height: 5ch
+  text-align: left
+
+.ready-btn
+  width: 5ch
+  height: 5ch
+  line-height: 5ch
+  border-radius: 50%
+  font-size: 1.5rem
+  font-family: "Comic Sans MS", "Comic Sans"
+  text-align: center
+  border-style: solid
+  border-width: 2px
+
+.ready
+  color: white
+  background-color: green
+  border-color: white
+
+.not-ready
+  color: grey
+  background-color: black
+  border-color: grey
+
+
+

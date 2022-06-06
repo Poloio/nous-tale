@@ -25,6 +25,8 @@ export class HomeComponent implements OnInit {
   maxPlayerOptions: number[] = [ 4, 8, 12 ];
   maxPlayers: number = 8;
 
+  roomCode: string = '';
+
   signalr: signalR.HubConnection;
 
 
@@ -59,6 +61,14 @@ export class HomeComponent implements OnInit {
     } catch (err) {
       console.error(err);
     }
+  }
+
+  async enterRoom() {
+    let roomExists = await this.signalr.invoke('RoomExists', this.roomCode);
+    if (roomExists)
+      this.router.navigate([this.roomCode]);
+    else
+      alert("Room doesn't exist.");
   }
 
   setMaxPlayers(max: number) {

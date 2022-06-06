@@ -36,7 +36,12 @@
   </div>
   <div id="enter-room" class="room-manag-div"
     *ngIf="enteringRoom" @inSnapOut>
-    Enter room
+    <label for="room-code">Room code:</label>
+    <input type="text" [(ngModel)]="roomCode" id="room-code" class="room-input">
+    <br>
+    <button (click)="enterRoom()" *ngIf="roomCode !== ''" @inOut id="room-code" class="room-input mainbtn">
+      Enter room
+    </button>
   </div>
 
 </div>
