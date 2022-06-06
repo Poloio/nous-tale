@@ -4,7 +4,7 @@ import { ActivatedRoute, ParamMap, Router } from '@angular/router';
 import { autoUpdater } from 'electron';
 import { ConnectionService } from '../connection.service';
 import { inOut, inSnapOut } from '../animations'
-import { Player, Room } from '../types/entities'
+import { Player, Room, Tale } from '../types/entities'
 import { HubConnection } from '@microsoft/signalr';
 import { Lobbied } from '../types/interfaces';
 
@@ -23,20 +23,25 @@ export class LobbyComponent implements OnInit, Lobbied {
     isHost: false,
     emoji: ''
   }
+
   players: Player[] = [];// To avoid undefined exceptions
   roomCode: string;
   room: Room;
   hub: HubConnection;
+
+  tales: Tale[];
 
   isLoggingIn: boolean = true;
   isConnected: boolean = true;
   isReady: boolean = false;
   countingDown: boolean = false;
 
-  readonly countDownSeconds: number = 5;
+  readonly COUNTDOWN_SECONDS: number = 5;
   timerID: number;
   timerCounter: number = -1; // Negative to set first iteration to 0
   timerIsRunning: boolean = false;
+
+  gameStarted: boolean = false;
 
 
   // ANGULAR METHODS ---------------------------------------------------------------
@@ -68,6 +73,7 @@ export class LobbyComponent implements OnInit, Lobbied {
     }
 
     this.hub.on('readyCountChanged', (newCount) => this.onReadyCountChanged(newCount));
+    this.hub.on('talesCreated', (newTales) => this.tales = newTales);
   }
 
   // SERVER METHODS CALLED THROUGH INVOKE ------------------------------------------
@@ -146,6 +152,10 @@ export class LobbyComponent implements OnInit, Lobbied {
         this.stopCountdown();
   }
 
+  onTalesCreated(newTales: Tale[]) {
+    this.tales = newTales;
+  }
+
   // LOCAL METHODS ----------------------------------------------------------
 
   startCountdown() {
@@ -153,8 +163,8 @@ export class LobbyComponent implements OnInit, Lobbied {
     // Using window because Node.js is predetermined and returns Timeout instance
     this.timerID = window.setInterval(() => {
       this.timerCounter++;
-      console.log(`Beginning in ${this.countDownSeconds - this.timerCounter}...`);
-      if (this.timerCounter == this.countDownSeconds) {
+      console.log(`Beginning in ${this.COUNTDOWN_SECONDS - this.timerCounter}...`);
+      if (this.timerCounter == this.COUNTDOWN_SECONDS) {
         clearInterval(this.timerID)
         this.startGame();
       }
@@ -167,8 +177,9 @@ export class LobbyComponent implements OnInit, Lobbied {
     this.timerCounter = -1;
   }
 
-  startGame() {
-    this.router.navigate([`./game`, this.room.code]);
+  async startGame() {
+    if (this.player.isHost) await this.hub.invoke('CreateTales', this.room.id);
+    this.gameStarted = true;
   }
 }
 

@@ -1,4 +1,4 @@
-<div id="main-container">
+<div *ngIf="!gameStarted" id="main-container">
   <!-- Accquiring player information -->
   <div *ngIf="isLoggingIn" id="newplayer-info">
     <label for="room-input">Player name</label>
@@ -39,3 +39,6 @@
   </div>
 
 </div>
+
+<app-game *ngIf="gameStarted" [room]="room" [players]="players" [player]="player"
+  [tales]="tales"></app-game>
