@@ -73,7 +73,13 @@ export class LobbyComponent implements OnInit, Lobbied {
     }
 
     this.hub.on('readyCountChanged', (newCount) => this.onReadyCountChanged(newCount));
-    this.hub.on('talesCreated', (newTales) => this.tales = newTales);
+    this.hub.on('talesCreated', (newTales) => {
+      console.log('Tales received.');
+
+      this.tales = newTales;
+      console.log(this.tales, 'Tales');
+
+    });
   }
 
   // SERVER METHODS CALLED THROUGH INVOKE ------------------------------------------
@@ -88,6 +94,8 @@ export class LobbyComponent implements OnInit, Lobbied {
         this.player.emoji,
         this.room.id
       );
+
+      this.player = this.players.find(p => p.name === this.player.name)!;
       console.log(this.players,'Players');
 
     } catch(err) {
@@ -178,7 +186,11 @@ export class LobbyComponent implements OnInit, Lobbied {
   }
 
   async startGame() {
+    this.stopCountdown();
+    console.log('Server creating tales...');
     if (this.player.isHost) await this.hub.invoke('CreateTales', this.room.id);
+    console.log('Tales created.')
+
     this.gameStarted = true;
   }
 }

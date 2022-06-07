@@ -28,7 +28,9 @@ export type Tale = {
 }
 
 export type Chapter = {
+  id: number;
+  taleId: number;
   text: string;
   mood: string;
-  authorId: number;
+  playerId: number;
 }

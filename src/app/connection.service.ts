@@ -11,7 +11,7 @@ export class ConnectionService {
 
   constructor() {
     this.instance = new signalR.HubConnectionBuilder()
-      .withUrl('https://localhost:44369/sessions')
+      .withUrl('https://noustaleapi.azurewebsites.net/sessions')
       .configureLogging(signalR.LogLevel.Information)
       .withAutomaticReconnect()
       .build();
@@ -22,7 +22,7 @@ export class ConnectionService {
   async start() {
     try {
       await this.instance.start();
-      console.log("SignalR connected.")
+      console.log("SignalR connected.");
     } catch (err) {
       console.log(err);
       setTimeout(this.start, 5000);
