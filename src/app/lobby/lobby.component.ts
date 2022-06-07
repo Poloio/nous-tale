@@ -75,6 +75,10 @@ export class LobbyComponent implements OnInit, Lobbied {
     this.hub.on('readyCountChanged', (newCount) => this.onReadyCountChanged(newCount));
     this.hub.on('talesCreated', (newTales) => {
       console.log('Tales received.');
+    this.hub.on('playerEntered', (newPlayer: Player) => this.onPlayerEntered(newPlayer));
+
+    this.hub.on('playerExited', (playerID: number, hostPlayerID: number) =>
+      this.onPlayerExited(playerID, hostPlayerID) );
 
       this.tales = newTales;
       console.log(this.tales, 'Tales');
