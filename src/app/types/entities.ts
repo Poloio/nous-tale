@@ -23,6 +23,7 @@ export type RoomWithPlayers = {
 
 export type Tale = {
   id: number;
+  roomId: number;
   title: string;
   chapters: Chapter[];
 }
