@@ -99,8 +99,8 @@ export class GameComponent implements OnInit {
       this.tales = updatedTales;
       console.log('All tales updated.');
       console.log(this.tales);
-      this.cdref.detectChanges();
       this.loadNextRound();
+      this.cdref.detectChanges();
     });
     this.hub.on('everyoneIsReady', () => this.loadNextRound());
   }
@@ -118,7 +118,6 @@ export class GameComponent implements OnInit {
     console.log(`Sending tale ${updatedTale.id} to server to be updated...`);
     await this.hub.invoke('UpdateTale', updatedTale);
     console.log(`Tale ${updatedTale.id} updated.`);
-    this.cdref.detectChanges();
   }
 
   /** Toggles {@link isReadyNxtRound} flag in the code, and notifies this change
@@ -141,6 +140,7 @@ export class GameComponent implements OnInit {
       console.log(this.currentTale, 'Current tale after round');
       this.isFirstTale = false;
       this.isReadyNxtRound = false;
+      this.limitTimer.counter = 0;
       console.log('Next round loaded');
       this.startTimer();
     } else {
