@@ -3,9 +3,12 @@
   <input type="text" *ngIf="isFirstTale"
     class="tale-title" [(ngModel)]="currentTale.title" placeholder="Your title">
   <p class="tale-title" *ngIf="!isFirstTale" [(ngModel)]="currentTale.title"></p>
-
-  <textarea [(ngModel)]="currentTale.chapters[roundNum]" cols="50"
+  <div id="writing-zone">
+    <p *ngIf="!isFirstTale" id="last-chapter">{{getLastChapter()}}</p>
+    <textarea [(ngModel)]="currentTale.chapters[roundNum]" cols="50"
     rows="10" class="chapter-area"></textarea>
+  </div>
+
 </div>
 
 
