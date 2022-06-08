@@ -60,8 +60,8 @@ export class GameComponent implements OnInit {
     let index: number;
     this.playerIndex + this.roundNum < this.players.length
       // 4 players: J2 takes Tale#1 at round 3
-      ? index = this.playerIndex + this.roundNum
-      : index = this.playerIndex + this.roundNum - this.players.length;
+      ? index = this.playerIndex + this.roundNum // p0 + r0 = t0
+      : index = this.playerIndex + this.roundNum - this.players.length; //p1/1 + r1 =
     return index;
   }
 
@@ -129,6 +129,7 @@ export class GameComponent implements OnInit {
     if (this.roundNum < this.players.length - 1) {
       this.sendUpdatedTale(this.currentTale);
       this.currentTale = this.tales[this.getTaleIndex()];
+      console.log(this.currentTale, 'Current tale after round');
       this.isFirstTale = false;
       this.isReadyNxtRound = false;
       this.startTimer();
