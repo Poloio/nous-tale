@@ -90,7 +90,7 @@ export class GameComponent implements OnInit {
     this.currentTale = this.tales[this.getTaleIndex()];
     console.log(this.currentTale, 'Current tale');
 
-    this.startTimer()
+    this.startTimer();
 
     this.hub.on('taleWasUpdated', (updatedTale: Tale, index: number) =>
       {this.tales[index] = updatedTale; this.cdref.detectChanges()} );

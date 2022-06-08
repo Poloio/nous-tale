@@ -4,7 +4,7 @@
     class="tale-title" [(ngModel)]="currentTale.title" placeholder="Your title">
   <p class="tale-title" *ngIf="!isFirstTale">{{currentTale.title}}</p>
   <div id="writing-zone">
-    <p *ngIf="!isFirstTale" id="last-chapter">{{getLastChapter().text}}</p>
+    <p *ngIf="!isFirstTale" id="last-chapter">{{currentTale.chapters[roundNum-1].text}}</p>
     <textarea [(ngModel)]="currentTale.chapters[roundNum].text" cols="50"
     rows="10" class="chapter-area"></textarea>
   </div>
