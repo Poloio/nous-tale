@@ -141,8 +141,8 @@ export class GameComponent implements OnInit {
       console.log(this.currentTale, 'Current tale after round');
       this.isFirstTale = false;
       this.isReadyNxtRound = false;
-      this.startTimer();
       console.log('Next round loaded');
+      this.startTimer();
     } else {
       this.finishGame();
       console.log('Game ended');
