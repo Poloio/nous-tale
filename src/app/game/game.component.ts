@@ -99,7 +99,6 @@ export class GameComponent implements OnInit {
   /** Starts the timeout countdown for current round. */
   startTimer() {
     console.log('Timer started.');
-
     this.limitTimer.id = window.setInterval(() => this.elapse(), 1000);
   }
 

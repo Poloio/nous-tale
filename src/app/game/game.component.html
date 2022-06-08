@@ -2,10 +2,10 @@
   <!-- Title is editable if it's the first round -->
   <input type="text" *ngIf="isFirstTale"
     class="tale-title" [(ngModel)]="currentTale.title" placeholder="Your title">
-  <p class="tale-title" *ngIf="!isFirstTale" [(ngModel)]="currentTale.title"></p>
+  <p class="tale-title" *ngIf="!isFirstTale">{{currentTale.title}}</p>
   <div id="writing-zone">
-    <p *ngIf="!isFirstTale" id="last-chapter">{{getLastChapter()}}</p>
-    <textarea [(ngModel)]="currentTale.chapters[roundNum]" cols="50"
+    <p *ngIf="!isFirstTale" id="last-chapter">{{getLastChapter().text}}</p>
+    <textarea [(ngModel)]="currentTale.chapters[roundNum].text" cols="50"
     rows="10" class="chapter-area"></textarea>
   </div>
 
