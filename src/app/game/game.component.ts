@@ -51,7 +51,6 @@ export class GameComponent implements OnInit {
     if (this.limitTimer.counter === currentLimit) {
       this.limitTimer.counter = 0;
       clearInterval(this.limitTimer.id);
-      this.waitingForUpdate = true;
       this.sendUpdatedTale(this.currentTale);
     }
   }
@@ -96,11 +95,11 @@ export class GameComponent implements OnInit {
 
     this.startTimer();
 
-    this.hub.on('taleWasUpdated', (updatedTale: Tale, index: number) => {
+    this.hub.on('talesWereUpdated', (updatedTale: Tale, index: number) => {
       console.log(updatedTale, 'Updated tale');
       this.tales[index] = updatedTale;
       this.cdref.detectChanges();
-      if (this.waitingForUpdate) this.loadNextRound();
+      this.loadNextRound();
     });
     this.hub.on('everyoneIsReady', () => this.loadNextRound());
   }
