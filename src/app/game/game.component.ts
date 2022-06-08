@@ -44,7 +44,7 @@ export class GameComponent implements OnInit {
   elapse(): void {
     this.limitTimer.counter++;
     console.log(`${this.LIMIT_SECONDS-this.limitTimer.counter} seconds left.`);
-    if (this.limitTimer.counter === this.LIMIT_SECONDS) {
+    if (this.limitTimer.counter === (this.isFirstTale ? 10+this.LIMIT_SECONDS : this.LIMIT_SECONDS)) {
       this.limitTimer.counter = 0;
       clearInterval(this.limitTimer.id)
       this.loadNextRound();
@@ -100,8 +100,7 @@ export class GameComponent implements OnInit {
   startTimer() {
     console.log('Timer started.');
 
-    this.limitTimer.id = window.setInterval(() => this.elapse(),
-      this.isFirstTale ? this.LIMIT_SECONDS + 10 : this.LIMIT_SECONDS);
+    this.limitTimer.id = window.setInterval(() => this.elapse(), 1000);
   }
 
   /** Sends a tale to the server to be updated for everyone else.
