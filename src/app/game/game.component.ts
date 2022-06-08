@@ -95,9 +95,9 @@ export class GameComponent implements OnInit {
 
     this.startTimer();
 
-    this.hub.on('talesWereUpdated', (updatedTale: Tale, index: number) => {
-      console.log(updatedTale, 'Updated tale');
-      this.tales[index] = updatedTale;
+    this.hub.on('talesWereUpdated', (updatedTales: Tale[]) => {
+      this.tales = updatedTales;
+      console.log('All tales updated.');
       this.cdref.detectChanges();
       this.loadNextRound();
     });
