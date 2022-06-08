@@ -116,7 +116,7 @@ export class GameComponent implements OnInit {
    */
   async sendUpdatedTale(updatedTale: Tale) {
     console.log(`Sending tale ${updatedTale.id} to server to be updated...`);
-    await this.hub.invoke('UpdateTale', updatedTale, this.tales.indexOf(this.currentTale));
+    await this.hub.invoke('UpdateTale', updatedTale);
     console.log(`Tale ${updatedTale.id} updated.`);
     this.cdref.detectChanges();
   }

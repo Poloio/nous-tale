@@ -12,6 +12,7 @@ export class ConnectionService {
   constructor() {
     this.instance = new signalR.HubConnectionBuilder()
       .withUrl('https://noustaleapi.azurewebsites.net/sessions')
+      //.withUrl('https://localhost:44369/sessions')
       .configureLogging(signalR.LogLevel.Information)
       .withAutomaticReconnect()
       .build();
