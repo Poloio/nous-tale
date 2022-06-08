@@ -47,7 +47,7 @@ export class LobbyComponent implements OnInit, Lobbied {
   // ANGULAR METHODS ---------------------------------------------------------------
 
   constructor(private connection:ConnectionService, private routeFrom: ActivatedRoute,
-    private router: Router, private errorHandler: ErrorHandler) {
+    private router: Router, private errorHandler: ErrorHandler, private cdref: ChangeDetectorRef) {
     this.hub = connection.instance;
    }
 
@@ -78,6 +78,7 @@ export class LobbyComponent implements OnInit, Lobbied {
       this.tales = newTales;
       console.log(this.tales, 'Tales');
       console.log('Tales received.');
+      this.cdref.detectChanges();
     });
 
     this.hub.on('playerEntered', (newPlayer: Player) => this.onPlayerEntered(newPlayer));
@@ -144,12 +145,14 @@ export class LobbyComponent implements OnInit, Lobbied {
     // If hostPlayerID is -1, the host hasn't exited
     if (hostPlayerID !== -1)
       this.players.find(p => p.id === hostPlayerID)!.isHost = true;
+    this.cdref.detectChanges();
   }
 
   onPlayerEntered(newPlayer: Player) {
     this.players.push(newPlayer);
     // TODO pretty popup
     console.log(`Player ${newPlayer.name} joined.`);
+    this.cdref.detectChanges();
   }
 
   onReadyCountChanged(newReadyCount: number) {
@@ -161,6 +164,7 @@ export class LobbyComponent implements OnInit, Lobbied {
     else
       if (this.timerIsRunning)
         this.stopCountdown();
+    this.cdref.detectChanges();
   }
 
   onTalesCreated(newTales: Tale[]) {

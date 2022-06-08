@@ -40,6 +40,7 @@ export class GameComponent implements OnInit {
   /** Custom object to store the interval neccesary values. */
   limitTimer: {id: number, counter: number, isRunning: boolean} =
     {id: 0, counter: 0, isRunning: false}
+
   /** Function that later defines the countdown for every round. */
   elapse(): void {
     this.limitTimer.counter++;
@@ -78,7 +79,7 @@ export class GameComponent implements OnInit {
    * @constructor
    * @param {ConnectionService} connection Service used to access SignalR methods
    */
-  constructor(private connection: ConnectionService) {
+  constructor(private connection: ConnectionService, private cdref: ChangeDetectorRef) {
     this.hub = connection.instance;
   }
 
@@ -92,7 +93,7 @@ export class GameComponent implements OnInit {
     this.startTimer()
 
     this.hub.on('taleWasUpdated', (updatedTale: Tale, index: number) =>
-      this.tales[index] = updatedTale );
+      {this.tales[index] = updatedTale; this.cdref.detectChanges()} );
     this.hub.on('everyoneIsReady', () => this.loadNextRound());
   }
 
