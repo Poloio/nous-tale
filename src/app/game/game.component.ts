@@ -102,7 +102,6 @@ export class GameComponent implements OnInit {
       this.loadNextRound();
       this.cdref.detectChanges();
     });
-    this.hub.on('everyoneIsReady', () => this.loadNextRound());
   }
 
   /** Starts the timeout countdown for current round. */
@@ -117,6 +116,7 @@ export class GameComponent implements OnInit {
   async sendUpdatedTale(updatedTale: Tale) {
     console.log(`Sending tale ${updatedTale.id} to server to be updated...`);
     await this.hub.invoke('UpdateTale', updatedTale);
+    await this.hub.invoke('RoundReadyChanged', this.isReadyNxtRound, this.room.id);
     console.log(`Tale ${updatedTale.id} updated.`);
   }
 
