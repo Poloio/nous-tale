@@ -93,9 +93,11 @@ export class GameComponent implements OnInit {
 
     this.startTimer();
 
-    this.hub.on('taleWasUpdated', (updatedTale: Tale, index: number) =>
-      {this.tales[index] = updatedTale; this.cdref.detectChanges()}
-      );
+    this.hub.on('taleWasUpdated', (updatedTale: Tale, index: number) => {
+      console.log(updatedTale, 'Updated tale');
+      this.tales[index] = updatedTale;
+      this.cdref.detectChanges();
+    });
     this.hub.on('everyoneIsReady', () => this.loadNextRound());
   }
 
@@ -109,7 +111,10 @@ export class GameComponent implements OnInit {
    * @param {Tale} updatedTale The tale to be updated.
    */
   async sendUpdatedTale(updatedTale: Tale) {
+    console.log(`Sending tale ${updatedTale.id} to server to be updated...`);
     await this.hub.invoke('UpdateTale', updatedTale, this.tales.indexOf(this.currentTale));
+    console.log(`Tale ${updatedTale.id} updated.`);
+    this.cdref.detectChanges();
   }
 
   /** Toggles {@link isReadyNxtRound} flag in the code, and notifies this change
