@@ -44,8 +44,9 @@ export class GameComponent implements OnInit {
   /** Function that later defines the countdown for every round. */
   elapse(): void {
     this.limitTimer.counter++;
-    console.log(`${this.LIMIT_SECONDS-this.limitTimer.counter} seconds left.`);
-    if (this.limitTimer.counter === (this.isFirstTale ? 10+this.LIMIT_SECONDS : this.LIMIT_SECONDS)) {
+    let currentLimit = this.isFirstTale ? 10+this.LIMIT_SECONDS : this.LIMIT_SECONDS;
+    console.log(`${currentLimit-this.limitTimer.counter} seconds left.`);
+    if (this.limitTimer.counter === currentLimit) {
       this.limitTimer.counter = 0;
       clearInterval(this.limitTimer.id)
       this.loadNextRound();
@@ -127,13 +128,15 @@ export class GameComponent implements OnInit {
 
     if (this.roundNum < this.players.length - 1) {
       this.sendUpdatedTale(this.currentTale);
-      this.roundNum++;
       this.currentTale = this.tales[this.getTaleIndex()];
       this.isFirstTale = false;
       this.isReadyNxtRound = false;
       this.startTimer();
+      console.log('Next round loaded');
     } else
       this.finishGame();
+      console.log('Game ended');
+      this.roundNum++;
   }
 
   finishGame() {

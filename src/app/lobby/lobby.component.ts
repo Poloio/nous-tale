@@ -180,7 +180,7 @@ export class LobbyComponent implements OnInit, Lobbied {
     this.timerID = window.setInterval(() => {
       this.timerCounter++;
       console.log(`Beginning in ${this.COUNTDOWN_SECONDS - this.timerCounter}...`);
-      if (this.timerCounter == this.COUNTDOWN_SECONDS) {
+      if (this.timerCounter >= this.COUNTDOWN_SECONDS) {
         clearInterval(this.timerID)
         this.startGame();
       }
