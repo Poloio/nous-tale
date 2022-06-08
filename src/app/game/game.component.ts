@@ -34,6 +34,8 @@ export class GameComponent implements OnInit {
   currentTale: Tale;
   /** Represents if this user is ready for the next round. */
   isReadyNxtRound: boolean = false;
+  /** Represents if the round is over and client is waiting or new tales */
+  waitingForUpdate: boolean = false;
 
   /** Constant that stores how many seconds the players have to write every round. */
   readonly LIMIT_SECONDS: number = 30;
@@ -48,8 +50,9 @@ export class GameComponent implements OnInit {
     console.log(`${currentLimit-this.limitTimer.counter} seconds left.`);
     if (this.limitTimer.counter === currentLimit) {
       this.limitTimer.counter = 0;
-      clearInterval(this.limitTimer.id)
-      this.loadNextRound();
+      clearInterval(this.limitTimer.id);
+      this.waitingForUpdate = true;
+      this.sendUpdatedTale(this.currentTale);
     }
   }
 
@@ -97,6 +100,7 @@ export class GameComponent implements OnInit {
       console.log(updatedTale, 'Updated tale');
       this.tales[index] = updatedTale;
       this.cdref.detectChanges();
+      if (this.waitingForUpdate) this.loadNextRound();
     });
     this.hub.on('everyoneIsReady', () => this.loadNextRound());
   }
@@ -129,10 +133,10 @@ export class GameComponent implements OnInit {
    * to use them for the next. If it was the last round, the game finishes.
    */
   loadNextRound() {
+    this.waitingForUpdate = false;
     console.log(`Round ${this.roundNum} ended.`);
     this.roundNum++;
     if (this.roundNum <= this.players.length - 1) {
-      this.sendUpdatedTale(this.currentTale);
       this.currentTale = this.tales[this.getTaleIndex()];
       console.log(this.currentTale, 'Current tale after round');
       this.isFirstTale = false;
