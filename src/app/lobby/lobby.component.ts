@@ -78,6 +78,7 @@ export class LobbyComponent implements OnInit, Lobbied {
       this.tales = newTales;
       console.log(this.tales, 'Tales');
       console.log('Tales received.');
+      this.gameStarted = true;
       this.cdref.detectChanges();
     });
 
@@ -196,9 +197,6 @@ export class LobbyComponent implements OnInit, Lobbied {
     this.stopCountdown();
     console.log('Server creating tales...');
     if (this.player.isHost) await this.hub.invoke('CreateTales', this.room.id);
-    console.log('Tales created.');
-    this.gameStarted = true;
-    this.cdref.detectChanges();
   }
 }
 

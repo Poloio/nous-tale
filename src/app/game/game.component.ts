@@ -93,7 +93,8 @@ export class GameComponent implements OnInit {
     this.startTimer();
 
     this.hub.on('taleWasUpdated', (updatedTale: Tale, index: number) =>
-      {this.tales[index] = updatedTale; this.cdref.detectChanges()} );
+      {this.tales[index] = updatedTale; this.cdref.detectChanges()}
+      );
     this.hub.on('everyoneIsReady', () => this.loadNextRound());
   }
 
