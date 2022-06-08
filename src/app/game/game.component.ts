@@ -6,6 +6,7 @@ import { ConnectionService } from '../connection.service';
 import { inOut, inSnapOut } from '../animations';
 import { Chapter, Player, Room, Tale } from '../types/entities';
 import { HubConnection } from '@microsoft/signalr';
+import { isMainThread } from 'worker_threads';
 
 @Component({
   selector: 'app-game',
@@ -49,6 +50,7 @@ export class GameComponent implements OnInit {
     let currentLimit = this.isFirstTale ? 10+this.LIMIT_SECONDS : this.LIMIT_SECONDS;
     console.log(`${currentLimit-this.limitTimer.counter} seconds left.`);
     if (this.limitTimer.counter === currentLimit) {
+      this.isReadyNxtRound = true;
       this.limitTimer.counter = 0;
       clearInterval(this.limitTimer.id);
       this.sendUpdatedTale(this.currentTale);
