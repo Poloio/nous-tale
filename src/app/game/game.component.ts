@@ -125,7 +125,7 @@ export class GameComponent implements OnInit {
    */
   loadNextRound() {
     console.log(`Round ${this.roundNum} ended.`);
-
+    this.roundNum++;
     if (this.roundNum < this.players.length - 1) {
       this.sendUpdatedTale(this.currentTale);
       this.currentTale = this.tales[this.getTaleIndex()];
@@ -137,7 +137,6 @@ export class GameComponent implements OnInit {
     } else
       this.finishGame();
       console.log('Game ended');
-      this.roundNum++;
   }
 
   finishGame() {
