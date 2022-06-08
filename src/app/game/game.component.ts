@@ -139,9 +139,10 @@ export class GameComponent implements OnInit {
       this.isReadyNxtRound = false;
       this.startTimer();
       console.log('Next round loaded');
-    } else
+    } else {
       this.finishGame();
       console.log('Game ended');
+    }
   }
 
   finishGame() {
