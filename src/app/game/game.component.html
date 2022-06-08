@@ -1,7 +1,7 @@
 <div id="main-view">
   <!-- Title is editable if it's the first round -->
   <input type="text" *ngIf="isFirstTale"
-    class="tale-title-input" [(ngModel)]="currentTale.title">
+    class="tale-title" [(ngModel)]="currentTale.title" placeholder="Your title">
   <p class="tale-title" *ngIf="!isFirstTale" [(ngModel)]="currentTale.title"></p>
 
   <textarea [(ngModel)]="currentTale.chapters[roundNum]" cols="50"

@@ -84,14 +84,9 @@ export class LobbyComponent implements OnInit, Lobbied {
 
     this.hub.on('playerExited', (playerID: number, hostPlayerID: number) =>
       this.onPlayerExited(playerID, hostPlayerID) );
-
-
-
-
   }
 
   // SERVER METHODS CALLED THROUGH INVOKE ------------------------------------------
-
   async enterRoom() {
     try {
       console.log(`Entering as ${this.player.name}`);

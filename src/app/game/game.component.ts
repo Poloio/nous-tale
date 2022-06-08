@@ -36,7 +36,7 @@ export class GameComponent implements OnInit {
   isReadyNxtRound: boolean = false;
 
   /** Constant that stores how many seconds the players have to write every round. */
-  readonly LIMIT_SECONDS: number = 20;
+  readonly LIMIT_SECONDS: number = 30;
   /** Custom object to store the interval neccesary values. */
   limitTimer: {id: number, counter: number, isRunning: boolean} =
     {id: 0, counter: 0, isRunning: false}
@@ -100,7 +100,8 @@ export class GameComponent implements OnInit {
   startTimer() {
     console.log('Timer started.');
 
-    this.limitTimer.id = window.setInterval(() => this.elapse(), 1000)
+    this.limitTimer.id = window.setInterval(() => this.elapse(),
+      this.isFirstTale ? this.LIMIT_SECONDS + 10 : this.LIMIT_SECONDS);
   }
 
   /** Sends a tale to the server to be updated for everyone else.
