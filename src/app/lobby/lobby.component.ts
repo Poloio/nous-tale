@@ -4,7 +4,7 @@ import { ActivatedRoute, ParamMap, Router } from '@angular/router';
 import { autoUpdater } from 'electron';
 import { ConnectionService } from '../connection.service';
 import { inOut, inSnapOut } from '../animations'
-import { Player, Room, Tale } from '../types/entities'
+import { GameState, Player, Room, Tale } from '../types/entities'
 import { HubConnection } from '@microsoft/signalr';
 import { Lobbied } from '../types/interfaces';
 
@@ -15,7 +15,6 @@ import { Lobbied } from '../types/interfaces';
   animations: [ inOut, inSnapOut ]
 })
 export class LobbyComponent implements OnInit, Lobbied {
-
   // All players in lobby/game are included in the SignalR group.
   player: Player = {
     id: 0,
@@ -24,12 +23,25 @@ export class LobbyComponent implements OnInit, Lobbied {
     emoji: ''
   }
 
+  gameState: GameState;
+  enumValues = GameState;
+  onGameStateChanged(newState: GameState) {
+    this.gameState = newState;
+    console.log(`Game state changed to ${this.gameState.toString()} at parent component.`);
+    this.cdref.detectChanges();
+  }
+
   players: Player[] = [];// To avoid undefined exceptions
   roomCode: string;
   room: Room;
   hub: HubConnection;
 
   tales: Tale[];
+  onTalesUpdated(newTales: Tale[]) {
+    this.tales = newTales;
+    console.log('Tales updated at parent component.');
+    this.cdref.detectChanges();
+  }
 
   isLoggingIn: boolean = true;
   isConnected: boolean = true;
@@ -52,6 +64,8 @@ export class LobbyComponent implements OnInit, Lobbied {
    }
 
   ngOnInit(): void {
+
+    this.gameState = GameState.IN_LOBBY;
 
     this.routeFrom.data.subscribe((response: any) => {
       console.log('Fetching room...');
@@ -78,7 +92,7 @@ export class LobbyComponent implements OnInit, Lobbied {
       this.tales = newTales;
       console.log(this.tales, 'Tales');
       console.log('Tales received.');
-      this.gameStarted = true;
+      this.gameState = GameState.IN_GAME;
       this.cdref.detectChanges();
     });
 
@@ -101,7 +115,7 @@ export class LobbyComponent implements OnInit, Lobbied {
       );
 
       this.player = this.players.find(p => p.name === this.player.name)!;
-      console.log(this.players,'Players');
+      console.log(this.player,'This player');
 
     } catch(err) {
       console.error(err);
@@ -198,7 +212,6 @@ export class LobbyComponent implements OnInit, Lobbied {
     console.log('Server creating tales...');
     if (this.player.isHost) await this.hub.invoke('CreateTales', this.room.id);
     console.log('Tales created.');
-
   }
 }
 

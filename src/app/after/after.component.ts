@@ -1,7 +1,8 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { HubConnection } from '@microsoft/signalr';
 import { time } from 'console';
 import { ConnectionService } from '../connection.service';
-import { Player, Room, Tale } from '../types/entities';
+import { Chapter, GameState, Player, Room, Tale } from '../types/entities';
 
 @Component({
   selector: 'app-after',
@@ -9,24 +10,46 @@ import { Player, Room, Tale } from '../types/entities';
   styleUrls: ['./after.component.sass']
 })
 export class AfterComponent implements OnInit {
-
+  hub: HubConnection;
   @Input() room: Room;
   @Input() tales: Tale[];
   @Input() players: Player[];
   @Input() player: Player;
+  @Input() gameState: GameState;
+  @Output() changeGameState = new EventEmitter<GameState>();
 
   playingTale: Tale;
   taleNumber: number = 0;
+  lastShownChapter: number = 0;
+  showingChapters: Chapter[] = [];
+
   votedSkip: boolean = false;
   readingEnded: boolean = false;
+
+  gameEnded: boolean = false;
+
 
   readonly SECONDS_PER_CHAPTER: number = 15;
   nextTimer: {id: number, counter: number, isRunning: boolean} =
   {id: 0, counter: 0, isRunning: false}
 
+  getAuthorName(authorId: number): string {
+    return this.players.find(p => p.id === authorId)!.name;
+  }
+
   async elapse() {
     this.nextTimer.counter++;
     let readingTime = this.SECONDS_PER_CHAPTER * this.playingTale.chapters.length;
+
+    // Calculate which chapters to show based on time
+    let chapterIndex = Math.floor(this.nextTimer.counter/this.SECONDS_PER_CHAPTER);
+    if (chapterIndex > this.lastShownChapter)
+    {
+      this.lastShownChapter = chapterIndex;
+      this.showingChapters = this.playingTale.chapters.slice(0, this.lastShownChapter);
+      console.log('New chapter is shown');
+    }
+
     if (this.nextTimer.counter >= readingTime) {
       clearInterval(this.nextTimer.id);
       this.nextTimer.isRunning = false;
@@ -36,14 +59,24 @@ export class AfterComponent implements OnInit {
     }
   }
 
-  constructor(private connection: ConnectionService) { }
+  constructor(private connection: ConnectionService, private cdref: ChangeDetectorRef) {
+    this.hub = connection.instance;
+  }
 
   ngOnInit(): void {
+    console.log(this.players, 'Players on After');
+
+    console.log('Reading stories begin.');
     this.playingTale = this.tales[this.taleNumber];
+    console.log(this.playingTale, 'Current reading tale.');
+    this.showingChapters.push(this.playingTale.chapters[0]);
+
+    this.hub.on('everyoneVoted', () => this.nextTale());
   }
 
   async toggleSkip() {
-    // toggle skip in server
+    this.votedSkip = !this.votedSkip;
+    await this.hub.invoke('SkipVotesChanged', this.votedSkip);
   }
 
   startInterval() {
@@ -51,13 +84,21 @@ export class AfterComponent implements OnInit {
     this.nextTimer.isRunning = true;
   }
 
-  async nextTale() {
+  nextTale() {
+    if (this.taleNumber > this.tales.length - 1) {
+      this.changeGameState.emit(GameState.GAME_ENDED);
+      return;
+    }
     if (this.nextTimer.isRunning) clearInterval(this.nextTimer.id);
     this.taleNumber++;
     this.playingTale = this.tales[this.taleNumber];
+    console.log(this.playingTale, 'Current reading tale.');
+
     this.readingEnded = false;
     this.votedSkip = false;
     this.startInterval();
+    console.log('Next tale loaded.');
+    this.cdref.detectChanges();
   }
 
 }

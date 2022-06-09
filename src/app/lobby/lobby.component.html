@@ -1,4 +1,4 @@
-<div *ngIf="!gameStarted" id="main-container">
+<div *ngIf="gameState === enumValues.IN_LOBBY"  id="main-container">
   <!-- Accquiring player information -->
   <div *ngIf="isLoggingIn" id="newplayer-info">
     <label for="room-input">Player name</label>
@@ -37,8 +37,17 @@
       </button>
     </div>
   </div>
-
 </div>
 
-<app-game *ngIf="gameStarted" [room]="room" [players]="players" [player]="player"
-  [tales]="tales"></app-game>
+<app-game
+  *ngIf="gameState === enumValues.IN_GAME"
+  [room]="room"
+  [gameState]="gameState"
+  (changeGameState)="onGameStateChanged($event)"
+  [players]="players"
+  [player]="player"
+  [tales]="tales"
+  (updateTales)="onTalesUpdated($event)"></app-game>
+
+<app-after *ngIf="gameState === enumValues.AFTER_GAME" [gameState]="gameState" [room]="room" [players]="players" [player]="player"
+(changeGameState)="onGameStateChanged($event)" [tales]="tales"></app-after>

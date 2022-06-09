@@ -1,1 +1,15 @@
-<p>after works!</p>
+<div id="main-content">
+  <p class="tale-title">Title: {{playingTale.title}}</p>
+
+  <div id="chapters">
+    <div *ngFor="let chapter of showingChapters" class="chapter-entry">
+      <p class="author">Author: {{getAuthorName(chapter.playerID)}}</p>
+      <p class="chapter-text">
+        {{chapter.text}}
+      </p>
+      <p class="mood">{{chapter.mood}}</p>
+    </div>
+  </div>
+
+  <button class="toggle-skip {{votedSkip ? 'voted' : 'not-voted'}}">Skip</button>
+</div>

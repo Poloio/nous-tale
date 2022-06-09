@@ -1,5 +1,12 @@
 import { StringMap } from "@angular/compiler/src/compiler_facade_interface";
 
+export enum GameState {
+  IN_LOBBY,
+  IN_GAME,
+  AFTER_GAME,
+  GAME_ENDED
+}
+
 export type Player = {
   id: number;
   name: string;
@@ -30,8 +37,8 @@ export type Tale = {
 
 export type Chapter = {
   id: number;
-  taleId: number;
+  taleID: number;
   text: string;
   mood: string;
-  playerId: number;
+  playerID: number;
 }

@@ -1,13 +1,15 @@
 import { animate, animation, state, style, transition, trigger, useAnimation } from '@angular/animations';
-import { Component, ChangeDetectorRef, OnInit, Input, enableProdMode } from '@angular/core';
+import { Component, ChangeDetectorRef, OnInit, Input, enableProdMode, Output, EventEmitter } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { autoUpdater } from 'electron';
 import { ConnectionService } from '../connection.service';
 import { inOut, inSnapOut } from '../animations';
-import { Chapter, Player, Room, Tale } from '../types/entities';
+import { Chapter, GameState, Player, Room, Tale } from '../types/entities';
 import { HubConnection } from '@microsoft/signalr';
 import { isMainThread } from 'worker_threads';
 import { promises } from 'dns';
+import { ThisReceiver } from '@angular/compiler';
+import { clear } from 'console';
 
 @Component({
   selector: 'app-game',
@@ -21,9 +23,16 @@ export class GameComponent implements OnInit {
   hub: HubConnection;
 
   @Input() room: Room;
+
   @Input() players: Player[];
+
   @Input() player: Player;
+
   @Input() tales: Tale[];
+  @Output() updateTales = new EventEmitter<Tale[]>();
+
+  @Input() gameState: GameState;
+  @Output() changeGameState = new EventEmitter<GameState>();
 
   /** Counter to track current round.*/
   roundNum: number = 0;
@@ -101,7 +110,8 @@ export class GameComponent implements OnInit {
 
     this.currentTale = this.tales[this.getTaleIndex()];
     this.editingChapter = this.currentTale.chapters[this.roundNum];
-    console.log(this.currentTale, 'Current tale');
+    this.editingChapter.playerID = this.player.id;
+    console.log(this.currentTale, 'Current tale *************');
 
     this.startTimer();
 
@@ -109,6 +119,7 @@ export class GameComponent implements OnInit {
       this.tales = updatedTales;
       console.log('All tales updated.');
       console.log(this.tales);
+      window.clearInterval(this.limitTimer.id);
       this.loadNextRound();
       this.cdref.detectChanges();
     });
@@ -147,6 +158,8 @@ export class GameComponent implements OnInit {
     if (this.roundNum <= this.players.length - 1) {
       this.currentTale = this.tales[this.getTaleIndex()];
       this.editingChapter = this.currentTale.chapters[this.roundNum];
+      this.editingChapter.playerID = this.player.id;
+
       this.lastChapter = this.getLastChapter();
       console.log(this.currentTale, 'Current tale after round');
 
@@ -164,6 +177,7 @@ export class GameComponent implements OnInit {
   }
 
   finishGame() {
-    // Load stories and show them. Mood music? Voice synth?
+    this.updateTales.emit(this.tales);
+    this.changeGameState.emit(GameState.AFTER_GAME);
   }
 }
