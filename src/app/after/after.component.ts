@@ -40,9 +40,11 @@ export class AfterComponent implements OnInit {
   async elapse() {
     this.nextTimer.counter++;
     let readingTime = this.SECONDS_PER_CHAPTER * this.playingTale.chapters.length;
-
+    console.log(`Remaining ${readingTime-this.nextTimer.counter} of reading`);
     // Calculate which chapters to show based on time
     let chapterIndex = Math.floor(this.nextTimer.counter/this.SECONDS_PER_CHAPTER);
+    console.log(`Chapter index : ${chapterIndex}`);
+
     if (chapterIndex > this.lastShownChapter)
     {
       this.lastShownChapter = chapterIndex;
@@ -56,6 +58,8 @@ export class AfterComponent implements OnInit {
       this.readingEnded = true;
       this.votedSkip = true;
       await this.toggleSkip();
+      console.log('Loading next tale to read.');
+
     }
   }
 
@@ -70,6 +74,7 @@ export class AfterComponent implements OnInit {
     this.playingTale = this.tales[this.taleNumber];
     console.log(this.playingTale, 'Current reading tale.');
     this.showingChapters.push(this.playingTale.chapters[0]);
+    this.lastShownChapter = 0;
 
     this.hub.on('everyoneVoted', () => this.nextTale());
   }
