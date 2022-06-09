@@ -1,14 +1,26 @@
 <div id="main-view">
   <!-- Title is editable if it's the first round -->
   <input type="text" *ngIf="isFirstTale"
-    class="tale-title" [(ngModel)]="currentTale.title" placeholder="Your title">
+    class="tale-title" [(ngModel)]="currentTale.title" placeholder="Your title"
+    [attr.disabled]="roundEnded ? true : null">
+
   <p class="tale-title" *ngIf="!isFirstTale">{{currentTale.title}}</p>
+
   <div id="writing-zone">
-    <p *ngIf="!isFirstTale" id="last-chapter">{{currentTale.chapters[roundNum-1].text}}</p>
-    <textarea [(ngModel)]="currentTale.chapters[roundNum].text" cols="50"
-    rows="10" class="chapter-area"></textarea>
+    <p [attr.disabled]="roundEnded ? true : null" *ngIf="!isFirstTale" id="last-chapter">
+      {{lastChapter.text}}
+    </p>
+    <textarea [attr.disabled]="roundEnded ? true : null" [(ngModel)]="editingChapter.text"
+      cols="50" rows="10" class="chapter-area"></textarea>
+    <p id="mood-display">
+      Write this chapter in a <span class="mood">{{editingChapter.mood}}</span> mood.
+    </p>
   </div>
 
+  <button [attr.disabled]="roundEnded ? true : null"
+    class="ready-btn {{isReadyNxtRound ? 'ready' : 'not-ready'}}" (click)="toggleReady()">
+    {{isReadyNxtRound ? 'Ready' : 'Ready?'}}
+  </button>
 </div>
 
 

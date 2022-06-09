@@ -9,13 +9,15 @@ import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { LobbyComponent } from './lobby/lobby.component';
+import { AfterComponent } from './after/after.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     HomeComponent,
     GameComponent,
-    LobbyComponent
+    LobbyComponent,
+    AfterComponent
   ],
   imports: [
     BrowserModule,

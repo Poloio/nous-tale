@@ -7,6 +7,7 @@ import { inOut, inSnapOut } from '../animations';
 import { Chapter, Player, Room, Tale } from '../types/entities';
 import { HubConnection } from '@microsoft/signalr';
 import { isMainThread } from 'worker_threads';
+import { promises } from 'dns';
 
 @Component({
   selector: 'app-game',
@@ -33,11 +34,14 @@ export class GameComponent implements OnInit {
   isFirstTale: boolean = true;
   /** Stores the current round's tale to be accesed by the UI to offer editing controls. */
   currentTale: Tale;
+  editingChapter: Chapter;
+  lastChapter: Chapter;
+  /** Flag used to know when to block inputs after round end, to avoid unwanted updates.*/
+  roundEnded: Boolean;
   /** Represents if this user is ready for the next round. */
   isReadyNxtRound: boolean = false;
   /** Represents if the round is over and client is waiting or new tales */
   waitingForUpdate: boolean = false;
-
   /** Constant that stores how many seconds the players have to write every round. */
   readonly LIMIT_SECONDS: number = 30;
   /** Custom object to store the interval neccesary values. */
@@ -45,15 +49,18 @@ export class GameComponent implements OnInit {
     {id: 0, counter: 0, isRunning: false}
 
   /** Function that later defines the countdown for every round. */
-  elapse(): void {
+  async elapse() {
     this.limitTimer.counter++;
     let currentLimit = this.isFirstTale ? 10+this.LIMIT_SECONDS : this.LIMIT_SECONDS;
     console.log(`${currentLimit-this.limitTimer.counter} seconds left.`);
     if (this.limitTimer.counter === currentLimit) {
-      this.isReadyNxtRound = true;
-      this.limitTimer.counter = 0;
       clearInterval(this.limitTimer.id);
-      this.sendUpdatedTale(this.currentTale);
+      this.roundEnded = true;
+      if (!this.isReadyNxtRound) {
+        await this.toggleReady();
+      }
+      this.limitTimer.counter = 0;
+      this.cdref.detectChanges;
     }
   }
 
@@ -77,7 +84,7 @@ export class GameComponent implements OnInit {
     return this.currentTale.chapters
       .slice() // Make a copy bc reverse is mutable
       .reverse()
-      .find(ch => ch.text.length > 0)!;
+      .find(ch => ch.text.length > 0 && ch.id != this.editingChapter.id)!;
   }
 
   /**
@@ -93,6 +100,7 @@ export class GameComponent implements OnInit {
     console.log(`Index of player: ${this.playerIndex}`);
 
     this.currentTale = this.tales[this.getTaleIndex()];
+    this.editingChapter = this.currentTale.chapters[this.roundNum];
     console.log(this.currentTale, 'Current tale');
 
     this.startTimer();
@@ -109,7 +117,7 @@ export class GameComponent implements OnInit {
   /** Starts the timeout countdown for current round. */
   startTimer() {
     console.log('Timer started.');
-    this.limitTimer.id = window.setInterval(() => this.elapse(), 1000);
+    this.limitTimer.id = window.setInterval(async () => await this.elapse(), 1000);
   }
 
   /** Sends a tale to the server to be updated for everyone else.
@@ -118,7 +126,6 @@ export class GameComponent implements OnInit {
   async sendUpdatedTale(updatedTale: Tale) {
     console.log(`Sending tale ${updatedTale.id} to server to be updated...`);
     await this.hub.invoke('UpdateTale', updatedTale);
-    await this.hub.invoke('RoundReadyChanged', this.room.id, this.isReadyNxtRound);
     console.log(`Tale ${updatedTale.id} updated.`);
   }
 
@@ -127,6 +134,7 @@ export class GameComponent implements OnInit {
    */
   async toggleReady() {
     this.isReadyNxtRound = !this.isReadyNxtRound;
+    if (this.isReadyNxtRound) await this.sendUpdatedTale(this.currentTale);
     await this.hub.invoke('RoundReadyChanged', this.room.id,this.isReadyNxtRound);
   }
 
@@ -134,21 +142,25 @@ export class GameComponent implements OnInit {
    * to use them for the next. If it was the last round, the game finishes.
    */
   loadNextRound() {
-    this.waitingForUpdate = false;
     console.log(`Round ${this.roundNum} ended.`);
     this.roundNum++;
     if (this.roundNum <= this.players.length - 1) {
       this.currentTale = this.tales[this.getTaleIndex()];
+      this.editingChapter = this.currentTale.chapters[this.roundNum];
+      this.lastChapter = this.getLastChapter();
       console.log(this.currentTale, 'Current tale after round');
+
       this.isFirstTale = false;
-      this.isReadyNxtRound = false;
       this.limitTimer.counter = 0;
       console.log('Next round loaded');
       this.startTimer();
+      this.roundEnded = false;
+      this.isReadyNxtRound = false;
     } else {
       this.finishGame();
       console.log('Game ended');
     }
+    this.cdref.detectChanges();
   }
 
   finishGame() {
