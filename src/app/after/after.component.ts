@@ -48,8 +48,9 @@ export class AfterComponent implements OnInit {
     if (chapterIndex > this.lastShownChapter)
     {
       this.lastShownChapter = chapterIndex;
-      this.showingChapters = this.playingTale.chapters.slice(0, this.lastShownChapter);
+      this.showingChapters = this.playingTale.chapters.slice(undefined, this.lastShownChapter);
       console.log('New chapter is shown');
+      this.cdref.detectChanges();
     }
 
     if (this.nextTimer.counter >= readingTime) {
@@ -83,7 +84,7 @@ export class AfterComponent implements OnInit {
 
   async toggleSkip() {
     this.votedSkip = !this.votedSkip;
-    await this.hub.invoke('SkipVotesChanged', this.votedSkip);
+    await this.hub.invoke('SkipVotesChanged', this.room.id, this.votedSkip);
   }
 
   startInterval() {
