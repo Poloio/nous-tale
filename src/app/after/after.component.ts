@@ -49,7 +49,7 @@ export class AfterComponent implements OnInit {
     {
       console.log(`Chapter index : ${chapterIndex}`);
       this.lastShownChapter = chapterIndex;
-      this.showingChapters = this.playingTale.chapters.slice(undefined, this.lastShownChapter);
+      this.showingChapters = this.playingTale.chapters.slice(undefined, this.lastShownChapter + 1);
       console.log(this.showingChapters, `Showing chapters to ${this.lastShownChapter}`);
       this.cdref.detectChanges();
     }
