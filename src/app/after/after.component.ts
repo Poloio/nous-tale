@@ -1,6 +1,7 @@
 import { ChangeDetectorRef, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { HubConnection } from '@microsoft/signalr';
 import { time } from 'console';
+import { last } from 'rxjs';
 import { ConnectionService } from '../connection.service';
 import { Chapter, GameState, Player, Room, Tale } from '../types/entities';
 
@@ -43,13 +44,13 @@ export class AfterComponent implements OnInit {
     console.log(`Remaining ${readingTime-this.nextTimer.counter} of reading`);
     // Calculate which chapters to show based on time
     let chapterIndex = Math.floor(this.nextTimer.counter/this.SECONDS_PER_CHAPTER);
-    console.log(`Chapter index : ${chapterIndex}`);
 
     if (chapterIndex > this.lastShownChapter)
     {
+      console.log(`Chapter index : ${chapterIndex}`);
       this.lastShownChapter = chapterIndex;
       this.showingChapters = this.playingTale.chapters.slice(undefined, this.lastShownChapter);
-      console.log('New chapter is shown');
+      console.log(this.showingChapters, `Showing chapters to ${this.lastShownChapter}`);
       this.cdref.detectChanges();
     }
 
@@ -89,6 +90,8 @@ export class AfterComponent implements OnInit {
 
   startInterval() {
     this.nextTimer.id = window.setInterval(async () => this.elapse(), 1000);
+
+    console.log(`Chapter index : 0`);
     this.nextTimer.isRunning = true;
   }
 
