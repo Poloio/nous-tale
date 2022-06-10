@@ -45,7 +45,7 @@ export class AfterComponent implements OnInit {
     // Calculate which chapters to show based on time
     let chapterIndex = Math.floor(this.nextTimer.counter/this.SECONDS_PER_CHAPTER);
 
-    if (chapterIndex > this.lastShownChapter)
+    if (chapterIndex > this.lastShownChapter && chapterIndex !== this.playingTale.chapters.length)
     {
       console.log(`Chapter index : ${chapterIndex}`);
       this.lastShownChapter = chapterIndex;
@@ -59,8 +59,8 @@ export class AfterComponent implements OnInit {
       this.nextTimer.isRunning = false;
       this.readingEnded = true;
       this.votedSkip = true;
-      await this.toggleSkip();
       console.log('Loading next tale to read.');
+      await this.toggleSkip();
 
     }
   }
