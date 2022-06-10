@@ -94,17 +94,15 @@ export class AfterComponent implements OnInit {
   }
 
   nextTale() {
-
+    this.taleNumber++;
     if (this.taleNumber > this.tales.length - 1) {
       console.log('Game ended, navigating end room');
-
       this.changeGameState.emit(GameState.GAME_ENDED);
       return;
     }
     console.log('Loading next tale...');
     if (this.nextTimer.isRunning) clearInterval(this.nextTimer.id);
     this.nextTimer.counter = 0;
-    this.taleNumber++;
     this.playingTale = this.tales[this.taleNumber];
 
     console.log(this.playingTale, 'Current reading tale.');
