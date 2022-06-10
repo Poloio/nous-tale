@@ -8,8 +8,12 @@
     <label for="player-emoji">Emoji</label>
     <input type="text" [(ngModel)]="player.emoji"
       class="room-input emoji" id="player-emoji" maxlength="4">
+
     <br>
-    <button class="mainbtn room-input" id="enter-btn" (click)="enterRoom()">
+    <input *ngIf="room.isPrivate" type="text" [(ngModel)]="roomPasswordTry" class="room-input">
+
+    <br>
+    <button [attr.disabled]="(player.name !== '' && player.emoji !== '') ? true : null" class="mainbtn room-input" id="enter-btn" (click)="enterRoom()">
       Enter the room
     </button>
   </div>
@@ -49,5 +53,10 @@
   [tales]="tales"
   (updateTales)="onTalesUpdated($event)"></app-game>
 
-<app-after *ngIf="gameState === enumValues.AFTER_GAME" [gameState]="gameState" [room]="room" [players]="players" [player]="player"
-(changeGameState)="onGameStateChanged($event)" [tales]="tales"></app-after>
+<app-after
+  *ngIf="gameState === enumValues.AFTER_GAME"
+  [gameState]="gameState"
+  [room]="room"
+  [players]="players"
+  [player]="player"
+  (changeGameState)="onGameStateChanged($event)" [tales]="tales"></app-after>

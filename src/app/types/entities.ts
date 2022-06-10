@@ -16,11 +16,13 @@ export type Player = {
 
 export type Room = {
   id: number;
+  isPrivate: boolean;
   code: string;
   maxPlayers: number;
   readyCount: number;
   roundReadyCount: number;
   gameHasStarted: boolean;
+  password: string;
 }
 
 export type RoomWithPlayers = {

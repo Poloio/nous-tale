@@ -21,6 +21,7 @@
     class="ready-btn {{isReadyNxtRound ? 'ready' : 'not-ready'}}" (click)="toggleReady()">
     {{isReadyNxtRound ? 'Ready' : 'Ready?'}}
   </button>
+  <p>{{LIMIT_SECONDS-limitTimer.counter}} seconds left.</p>
 </div>
 
 

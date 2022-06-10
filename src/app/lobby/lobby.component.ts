@@ -16,6 +16,8 @@ import { Lobbied } from '../types/interfaces';
 })
 export class LobbyComponent implements OnInit, Lobbied {
   // All players in lobby/game are included in the SignalR group.
+
+  /** This client's player. */
   player: Player = {
     id: 0,
     name: '',
@@ -23,19 +25,24 @@ export class LobbyComponent implements OnInit, Lobbied {
     emoji: ''
   }
 
+  /** Represents the game state to control which screen is showing */
   gameState: GameState;
+  /** Holds a class instance to be accessed in the HTML and check values. */
   enumValues = GameState;
+  /** Event triggered by child components to affect the general game state */
   onGameStateChanged(newState: GameState) {
     this.gameState = newState;
     console.log(`Game state changed to ${this.gameState.toString()} at parent component.`);
     this.cdref.detectChanges();
   }
 
+  /** Array that represents the players in the server */
   players: Player[] = [];// To avoid undefined exceptions
   roomCode: string;
   room: Room;
   hub: HubConnection;
 
+  /** All the tales in the server, if updated */
   tales: Tale[];
   onTalesUpdated(newTales: Tale[]) {
     this.tales = newTales;
@@ -43,16 +50,22 @@ export class LobbyComponent implements OnInit, Lobbied {
     this.cdref.detectChanges();
   }
 
+  roomPasswordTry: string = '';
+
   isLoggingIn: boolean = true;
   isConnected: boolean = true;
   isReady: boolean = false;
   countingDown: boolean = false;
 
+  /** Constant to control how many seconds to wait before beginning */
   readonly COUNTDOWN_SECONDS: number = 5;
+  /** ID used to stop a running timer */
   timerID: number;
+  /** Counter to track how many seconds passed. */
   timerCounter: number = -1; // Negative to set first iteration to 0
+  /** @returns true if the begin timer is running. */
   timerIsRunning: boolean = false;
-
+  /** @returns true if the game has started */
   gameStarted: boolean = false;
 
 
@@ -103,9 +116,26 @@ export class LobbyComponent implements OnInit, Lobbied {
   }
 
   // SERVER METHODS CALLED THROUGH INVOKE ------------------------------------------
+  /** Checks login info. If all is correct, fetches the players and enters the room. */
   async enterRoom() {
     try {
       console.log(`Entering as ${this.player.name}`);
+
+      if (this.room.isPrivate) {
+        if (this.room.password !== this.roomPasswordTry) {
+          alert('This password is incorrect.')
+          return;
+        }
+      }
+
+      let tempPlayers: Player[] = await this.hub.invoke('GetPlayers', this.room.id);
+
+      let nameAlreadyExists = tempPlayers.every(p => p.name === this.player.name);
+      if(nameAlreadyExists) alert('This name is already taken.');
+      let emojiAlreadyExists = tempPlayers.every(p => p.name === this.player.name);
+      if(emojiAlreadyExists) alert('This emoji is already taken.');
+      if(nameAlreadyExists || emojiAlreadyExists) return;
+
       // Create a player for user and enter the room
       this.players = await this.hub.invoke(
         'EnterRoom',
@@ -124,6 +154,7 @@ export class LobbyComponent implements OnInit, Lobbied {
     console.log('Entered successfully.');
   }
 
+  /** Exits the room and notifies all players */
   async exitRoom() {
     try {
       await this.hub.invoke('ExitRoom', this.player.id);
@@ -134,6 +165,7 @@ export class LobbyComponent implements OnInit, Lobbied {
     }
   }
 
+  /** Toggles if the player is ready and notifies the server. */
   async toggleReady() {
     try {
       this.isReady= !this.isReady;
@@ -145,6 +177,7 @@ export class LobbyComponent implements OnInit, Lobbied {
 
   // CLIENT METHODS CALLED BY SERVER --------------------------------------------
 
+  /** Manages when a player exits the room. */
   onPlayerExited(playerID: number, hostPlayerID: number) {
     let gonePlayer = this.players.find(player => player.id === playerID)!;
     console.log(`${gonePlayer.name} logged out.`); // DEBUG
@@ -163,6 +196,7 @@ export class LobbyComponent implements OnInit, Lobbied {
     this.cdref.detectChanges();
   }
 
+  /** Manages when other player entered the room */
   onPlayerEntered(newPlayer: Player) {
     this.players.push(newPlayer);
     // TODO pretty popup
@@ -170,6 +204,7 @@ export class LobbyComponent implements OnInit, Lobbied {
     this.cdref.detectChanges();
   }
 
+  /** Manages when other player toggles their ready state */
   onReadyCountChanged(newReadyCount: number) {
     this.room.readyCount = newReadyCount;
     console.log(`Someone is ready! - ${this.room.readyCount}/${this.players.length}`);
@@ -187,7 +222,7 @@ export class LobbyComponent implements OnInit, Lobbied {
   }
 
   // LOCAL METHODS ----------------------------------------------------------
-
+  /** Starts the timer countdown */
   startCountdown() {
     this.timerIsRunning = true;
     // Using window because Node.js is predetermined and returns Timeout instance
@@ -201,12 +236,14 @@ export class LobbyComponent implements OnInit, Lobbied {
     }, 1000)
   }
 
+  /** Stops lobby's countdown timer */
   stopCountdown() {
     this.timerIsRunning = false;
     clearInterval(this.timerID);
     this.timerCounter = -1;
   }
 
+  /** Starts the game */
   async startGame() {
     this.stopCountdown();
     console.log('Server creating tales...');
