@@ -76,6 +76,8 @@ export class AfterComponent implements OnInit {
     this.showingChapters.push(this.playingTale.chapters[0]);
     this.lastShownChapter = 0;
 
+    this.startInterval();
+
     this.hub.on('everyoneVoted', () => this.nextTale());
   }
 
