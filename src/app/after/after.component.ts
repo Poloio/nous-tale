@@ -93,15 +93,21 @@ export class AfterComponent implements OnInit {
   }
 
   nextTale() {
+    console.log('Loading next tale...');
     if (this.taleNumber > this.tales.length - 1) {
       this.changeGameState.emit(GameState.GAME_ENDED);
       return;
     }
     if (this.nextTimer.isRunning) clearInterval(this.nextTimer.id);
+    this.nextTimer.counter = 0;
     this.taleNumber++;
     this.playingTale = this.tales[this.taleNumber];
-    console.log(this.playingTale, 'Current reading tale.');
 
+    console.log(this.playingTale, 'Current reading tale.');
+    this.showingChapters = [this.playingTale.chapters[0]];
+    this.lastShownChapter = 0;
+
+    console.log(this.playingTale, 'Current reading tale.');
     this.readingEnded = false;
     this.votedSkip = false;
     this.startInterval();
