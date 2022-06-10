@@ -58,10 +58,8 @@ export class AfterComponent implements OnInit {
       clearInterval(this.nextTimer.id);
       this.nextTimer.isRunning = false;
       this.readingEnded = true;
-      this.votedSkip = true;
       console.log('Loading next tale to read.');
-      await this.toggleSkip();
-
+      if (!this.votedSkip) await this.toggleSkip();
     }
   }
 
